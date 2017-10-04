@@ -128,4 +128,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 paypalrestsdk.configure({
     "mode": "sandbox", # sandbox or live
     "client_id": "",
-    "client_secret": "" })
+
+SALT = 'somthing/stupid'

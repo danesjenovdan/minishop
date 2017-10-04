@@ -1,4 +1,8 @@
 from shop.models import Basket, Item
+from django.core.signing import Signer
+from django.conf import settings
+
+SIGNER = Signer(salt=settings.SALT)
 
 def get_basket(request):
     key = request.session.get('order_key', None)
@@ -8,10 +12,11 @@ def get_basket(request):
     else:
         # generate new basket
         try:
-            key = int(Basket.objects.latest('id').id) + 1
+            key = SIGNER.sign(str(Basket.objects.latest('id').id + 1))
             print("read key")
         except:
-            key = 1
+            # if no basket in DB
+            key = SIGNER.sign('1')
             print("except key")
         request.session['order_key'] = key
         basket = Basket(session=key)

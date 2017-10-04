@@ -23,7 +23,7 @@ class Article(models.Model):
 
 
 class Basket(models.Model):
-	session = models.IntegerField(max_length=64)
+	session = models.CharField(max_length=64)
 	articles = models.ManyToManyField(Article, through='Item')
 	total = models.DecimalField(default=0.0, decimal_places=2, max_digits=10)
 	is_open = models.BooleanField(default=True)

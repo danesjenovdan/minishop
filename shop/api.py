@@ -76,19 +76,23 @@ def add_to_basket(request):
 
         add_article_to_basket(basket, article, quantity)
 
-        return JsonResponse(get_basket_data(basket))
+        basket_data = get_basket_data(basket)
+        html_from_view, count = get_items_for_basket(request)
+        basket_data['items'] = html_from_view
+        basket_data['item_count'] = count
+
+        return JsonResponse(basket_data)
     else:
         return JsonResponse({"status": "Method \"GET\" not allowed"})
 
 
 def basket(request):
     basket = get_basket(request)
-    html_from_view = json.loads(ItemView.as_view()(request).render().content.decode('utf-8'))
-    basket_date = get_basket_data(basket)
-    count =  sum([item['quantity'] for item in html_from_view])
-    basket_date['items'] = html_from_view
-    basket_date['item_count'] = count
-    return JsonResponse(basket_date)
+    basket_data = get_basket_data(basket)
+    html_from_view, count = get_items_for_basket(request)
+    basket_data['items'] = html_from_view
+    basket_data['item_count'] = count
+    return JsonResponse(basket_data)
 
 
 @csrf_exempt
@@ -164,3 +168,9 @@ def payment_cancel(request):
 def clear_session(request):
     del request.session['order_key']
     return JsonResponse({'status': 'clean'})
+
+
+def get_items_for_basket(request):
+    html_from_view = ItemView.get(ItemView, request=request).data
+    count =  sum([item['quantity'] for item in html_from_view])
+    return html_from_view, count
