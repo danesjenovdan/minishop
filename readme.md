@@ -168,31 +168,6 @@ Place an order (checkout)
 When your basket is filled an you want to proceed to checkout you can do a single call with all information needed. 
 
 
-### takeover checkout
-
-
-    
-    # let's fill out the request data
-    data = {
-        "payment_type": "personal_takeover",
-        "name": "Ivan Kunst",
-        "address": "Cankarjeva ulica 15 1000 Ljubljana",
-        "phone": "031031031",
-        "info": "Prišu bi iskat na tobačno v sredo ob 15ih",
-        "email": "ivan@ivan.si"
-    }
-
-    # now we can place the order
-    response = session.post('http://localhost:8000/api/checkout/', json=data)
-
-    # and the api should give us a response with all info needed
-    print (response.content)
-    {
-        "info": "come come", 
-        "status": "prepared"
-    }   
-
-
 ### upn checkout
 
     
@@ -202,7 +177,8 @@ When your basket is filled an you want to proceed to checkout you can do a singl
         "name": "Ivan Kunst",
         "address": "Cankarjeva ulica 15 1000 Ljubljana",
         "phone": "031031031",
-        "email": "ivan@ivan.si"
+        "email": "ivan@ivan.si",
+        "delivery_method": "post",
     }
 
     # now we can place the order
@@ -226,7 +202,9 @@ When your basket is filled an you want to proceed to checkout you can do a singl
         "address": "Cankarjeva ulica 15 1000 Ljubljana",
         "phone": "031031031",
         "info": "Prišu bi iskat na tobačno v sredo ob 15ih",
-        "email": "ivan@ivan.si"
+        "email": "ivan@ivan.si",
+        "subscription": True/False, # just for donation
+        "delivery_method": "takeover"
     }
 
     # now we can place the order
