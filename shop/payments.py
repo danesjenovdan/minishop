@@ -2,7 +2,11 @@ import paypalrestsdk
 import logging
 import urllib.parse
 
+from datetime import datetime, timedelta
+
 from django.shortcuts import get_object_or_404, redirect
+from django.conf import settings
+
 from shop.models import Order
 from shop.utils import update_stock
 
@@ -17,8 +21,8 @@ def paypal_checkout(order, success_url, fail_url):
         "payer": {
             "payment_method": "paypal"},
         "redirect_urls": {
-            "return_url": "http://localhost:8000/api/payment/execute/?urlsuccess=" + s_url + "&urlfail=" + f_url,
-            "cancel_url": "http://localhost:8000/api/payment/cancel/?urlfail=" + f_url},
+            "return_url": settings.BASE_URL + "api/payment/execute/?urlsuccess=" + s_url + "&urlfail=" + f_url,
+            "cancel_url": settings.BASE_URL + "api/payment/cancel/?urlfail=" + f_url},
         "transactions": [{
             "item_list": {
                 "items": [{
@@ -75,6 +79,92 @@ def paypal_execute(request):
 def paypal_cancel(request):
     fail_url = request.GET.get('urlfail', '')
     return fail_url
+
+
+def paypal_subscriptions_checkout(order, success_url, fail_url):
+    s_url = urllib.parse.quote(success_url, safe='~()*!.\'')
+    f_url = urllib.parse.quote(fail_url, safe='~()*!.\'')
+    items = order.basket.items.all()
+    if items:
+        item = items[0]
+    else:
+        print('You can\'t chackout without items?')
+    billing_plan_attributes = {
+        "name": str(order.basket.total),
+        "description": str(order.basket.total),
+        "merchant_preferences": {
+            "auto_bill_amount": "yes",
+            "cancel_url": settings.BASE_URL + "api/payment/cancel_subscription/?urlfail=" + f_url,
+            "initial_fail_amount_action": "continue",
+            "max_fail_attempts": "1",
+            "return_url": settings.BASE_URL + "api/payment/execute_subscription/?urlsuccess=" + s_url + "&urlfail=" + f_url,
+            "setup_fee": {
+                "currency": "EUR",
+                "value": str(order.basket.total)
+            }
+        },
+        "payment_definitions": [
+            {
+                "amount": {
+                    "currency": "EUR",
+                    "value": str(order.basket.total)
+                },
+                "cycles": "0",
+                "frequency": "MONTH",
+                "frequency_interval": "1",
+                "name": "Donation",
+                "type": "REGULAR"
+            }
+        ],
+        "type": "INFINITE"
+    }
+    billing_plan = paypalrestsdk.BillingPlan(billing_plan_attributes)
+    if billing_plan.create():
+        print("Billing Plan [%s] created successfully" % (billing_plan))
+        if billing_plan.activate():
+            print("Billing Plan [%s] activated successfully" % (billing_plan.id))
+            billing_agreement = paypalrestsdk.BillingAgreement({
+                "name": item.article.name,
+                "description": item.article.name,
+                "start_date": (datetime.now() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                "plan": {
+                    "id": billing_plan.id
+                },
+                "payer": {
+                    "payment_method": "paypal"
+                }
+            })
+            if billing_agreement.create():
+                for link in billing_agreement.links:
+                    if link.rel == "approval_url":
+                        approval_url = link.href
+                        return True, approval_url
+
+        else:
+            print("NI ŠLO")
+            return False, ''
+
+
+    else:
+        # billing plan is obviously allready created :)
+        print(billing_plan.error)
+    return False, ''
+
+
+def execute_subscription(request):
+    """Customer redirected to this endpoint by PayPal after payment approval
+    """
+    payment_token = request.GET.get('token', '')
+    success_url = request.GET.get('urlsuccess', '')
+    fail_url = request.GET.get('urlfail', '')
+    billing_agreement_response = paypalrestsdk.BillingAgreement.execute(payment_token)
+    return True, success_url
+
+def cancel_subscription():
+    fail_url = request.GET.get('urlfail', '')
+    return fail_url
+
+
 
 def upn(order):
     ref = 'SI05 ' + str(order.id).zfill(10)

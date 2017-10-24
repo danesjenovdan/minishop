@@ -130,3 +130,5 @@ paypalrestsdk.configure({
     "client_id": "",
 
 SALT = 'somthing/stupid'
+
+BASE_URL = 'http://localhost:8888/'

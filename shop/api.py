@@ -10,7 +10,7 @@ from rest_framework import status
 from shop.models import Article, Basket, Order, Category, Item
 from shop.serializers import ArticleSerializer, CategorySerializer, ItemSerializer
 from shop.utils import get_basket, get_basket_data, add_article_to_basket, update_stock, update_basket
-from shop.payments import paypal_checkout, paypal_execute, upn, paypal_cancel
+from shop.payments import paypal_checkout, paypal_execute, upn, paypal_cancel, paypal_subscriptions_checkout, execute_subscription, cancel_subscription
 
 import json
 # Create your views here.
@@ -132,9 +132,16 @@ def checkout(request):
             order.save()
 
         if payment_type == 'paypal':
+            try:
+                subscription = data['subscription']
+            except:
+                subscription = False
             success_url = data['success_url']
             fail_url = data['fail_url']
-            is_ok, url = paypal_checkout(order, success_url, fail_url)
+            if subscription:
+                is_ok, url = paypal_subscriptions_checkout(order, success_url, fail_url)
+            else:
+                is_ok, url = paypal_checkout(order, success_url, fail_url)
             if is_ok:
                 return JsonResponse({'status': 'prepared',
                                      'redirect_url': url})
@@ -162,6 +169,19 @@ def payment_execute(request):
 
 def payment_cancel(request):
     url = paypal_cancel(request)
+    return redirect(url)
+
+
+def payment_subscription_execute(request):
+    is_success, url = execute_subscription(request)
+    if is_success:
+        if 'order_key' in request.session.keys():
+            del request.session['order_key']
+
+    return redirect(url)
+
+def payment_subscription_cancel(request):
+    url = cancel_subscription(request)
     return redirect(url)
 
 
