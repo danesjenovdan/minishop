@@ -15,3 +15,4 @@ pytz==2017.2
 requests==2.18.4
 six==1.11.0
 urllib3==1.22
+django-cors-headers==2.1.0
