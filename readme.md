@@ -204,7 +204,9 @@ When your basket is filled an you want to proceed to checkout you can do a singl
         "info": "Prišu bi iskat na tobačno v sredo ob 15ih",
         "email": "ivan@ivan.si",
         "subscription": True/False, # just for donation
-        "delivery_method": "takeover"
+        "delivery_method": "takeover",
+        "success_url": "http://www.success_url.si",
+        "fail_url": "http://www.fail_url.com",
     }
 
     # now we can place the order
@@ -220,3 +222,8 @@ When your basket is filled an you want to proceed to checkout you can do a singl
     {
         payment_status: "approved"
     }
+
+
+Clear the basket. (clear session key)
+-------------------------
+response = session.get('http://localhost:8000/api/clear/')
