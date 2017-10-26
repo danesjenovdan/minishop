@@ -25,12 +25,7 @@ def paypal_checkout(order, success_url, fail_url):
             "cancel_url": settings.BASE_URL + "api/payment/cancel/?urlfail=" + f_url},
         "transactions": [{
             "item_list": {
-                "items": [{
-                    "name": item.article.name,
-                    "sku": item.article.name,
-                    "price": str(item.price),
-                    "currency": "EUR",
-                    "quantity": item.quantity} for item in order.basket.items.all()]},
+                "items": get_items_dict(order.basket.items.all())},
             "amount": {
                 "total": str(order.basket.total),
                 "currency": "EUR"},
@@ -173,3 +168,23 @@ def upn(order):
     items = order.basket.items.all()
     update_stock(order)
     return ref
+
+
+def get_items_dict(items):
+    out = []
+    for item in items:
+        if item.article.mergable:
+            out.append({
+                "name": item.article.name,
+                "sku": item.article.name,
+                "price": str(item.price*item.quantity),
+                "currency": "EUR",
+                "quantity": 1})
+        else:
+            out.append({
+                "name": item.article.name,
+                "sku": item.article.name,
+                "price": str(item.price),
+                "currency": "EUR",
+                "quantity": item.quantity})
+    return out

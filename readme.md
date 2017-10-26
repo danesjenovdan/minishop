@@ -34,7 +34,8 @@ To add a product to the basket we first need to get the available products:
             "price": "3.00",
             "tax": "10.00",
             "stock": 80,
-            "category": 4
+            "category": 4,
+            "mergable": false
         },
         {
             "id": 2,
@@ -42,7 +43,8 @@ To add a product to the basket we first need to get the available products:
             "price": "10.00",
             "tax": "0.00",
             "stock": 10000,
-            "category": 3
+            "category": 3,
+            "mergable": false
         }
     ]
    
@@ -86,7 +88,8 @@ And we can see that it has been added:
                                "price": "3.00",
                                "tax": "0.00",
                                "stock": 80,
-                               "category": 4}}],
+                               "category": 4,
+                               "mergable": false}}],
         "order_key": "32:N3-680s8I-Imx44hqeyli5D5dgQ"
     }
     
@@ -106,7 +109,8 @@ Get items in basket
                 "price": "3.00",
                 "tax": "10.00",
                 "stock": 80,
-                "category": 4
+                "category": 4,
+                "mergable": false
             },
             "quantity": 1
         },
@@ -118,7 +122,8 @@ Get items in basket
                 "price": "10.00",
                 "tax": "0.00",
                 "stock": 10000,
-                "category": 3
+                "category": 3,
+                "mergable": true
             },
             "quantity": 4
         }
@@ -151,7 +156,8 @@ You can use a REST PUT and DELETE to update/delete the basket lines. So let's up
             "price": "3.00",
             "tax": "10.00",
             "stock": 80,
-            "category": 4
+            "category": 4,
+            "mergable": false
         },
         "quantity": 1
     }

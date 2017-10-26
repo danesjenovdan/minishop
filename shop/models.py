@@ -17,6 +17,7 @@ class Article(models.Model):
 	tax = models.DecimalField(decimal_places=2, max_digits=10)
 	stock = models.IntegerField(default=0)
 	image = models.ImageField(upload_to='images/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
+	mergable = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.name
