@@ -13,7 +13,8 @@ First get our basket and see the response:
     print(response.content)
     {
         "is_open": true,
-        "total": "0.00"
+        "total": "0.00",
+        "order_key": "32:N3-680s8I-Imx44hqeyli5D5dgQ"
     }
 
 
@@ -70,7 +71,7 @@ Ok, now we want to add this to our basket:
         "quantity":1
     }
 
-    response = session.post('http://localhost:8000/api/add_to_basket/', json=data)
+    response = session.post('http://localhost:8000/api/add_to_basket/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ', json=data)
 
 And we can see that it has been added:
 
@@ -78,7 +79,15 @@ And we can see that it has been added:
     print(response.content)
     {
         "total": "3.00",
-        "is_open": true
+        "is_open": true,
+        "items": [{"id": 23,
+                   "article": {"id": 1,
+                               "name": "Rizle",
+                               "price": "3.00",
+                               "tax": "0.00",
+                               "stock": 80,
+                               "category": 4}}],
+        "order_key": "32:N3-680s8I-Imx44hqeyli5D5dgQ"
     }
     
     
@@ -86,7 +95,7 @@ And we can see that it has been added:
 Get items in basket
 --------------------------
 
-    response = session.get('http://localhost:8000/api/items/')
+    response = session.get('http://localhost:8000/api/items/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ')
     print(response.content)
     [
         {
@@ -130,7 +139,7 @@ You can use a REST PUT and DELETE to update/delete the basket lines. So let's up
     data = {
         "quantity": 1
     }
-    response = session.put('http://localhost:8000/api/items/5/', data)
+    response = session.put('http://localhost:8000/api/items/5/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ', data)
 
     # and we can see it's been updated
     print(response.content)
@@ -150,15 +159,15 @@ You can use a REST PUT and DELETE to update/delete the basket lines. So let's up
 Now we will delete this line, it will return a 204 when it's successful:
 
 
-    response = session.delete('http://localhost:8000/api/items/5/')
+    response = session.delete('http://localhost:8000/api/items/5/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ')
     print(response.status_code)
     204
-    response = session.delete('http://localhost:8000/api/items/6/')
+    response = session.delete('http://localhost:8000/api/items/6/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ')
     print(response.status_code)
     204
 
     # we can verify that the basket is empty now
-    response = session.get('http://localhost:8000/api/items/')
+    response = session.get('http://localhost:8000/api/items/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ')
     print(response.content)
     []
 
@@ -182,7 +191,7 @@ When your basket is filled an you want to proceed to checkout you can do a singl
     }
 
     # now we can place the order
-    response = session.post('http://localhost:8000/api/checkout/', json=data)
+    response = session.post('http://localhost:8000/api/checkout/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ', json=data)
 
     # and the api should give us a response with all info needed
     print (response.content)
@@ -210,7 +219,7 @@ When your basket is filled an you want to proceed to checkout you can do a singl
     }
 
     # now we can place the order
-    response = session.post('http://localhost:8000/api/checkout/', json=data)
+    response = session.post('http://localhost:8000/api/checkout/?order_key=32:N3-680s8I-Imx44hqeyli5D5dgQ', json=data)
 
     # and the api should give us a response with redirect url
     print (response.content)
@@ -222,8 +231,3 @@ When your basket is filled an you want to proceed to checkout you can do a singl
     {
         payment_status: "approved"
     }
-
-
-Clear the basket. (clear session key)
--------------------------
-response = session.get('http://localhost:8000/api/clear/')

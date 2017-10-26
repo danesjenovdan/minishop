@@ -5,7 +5,7 @@ from django.conf import settings
 SIGNER = Signer(salt=settings.SALT)
 
 def get_basket(request):
-    key = request.session.get('order_key', None)
+    key = request.GET.get('order_key', None)
     if key:
         print('mam key', key)
         return Basket.objects.get(session=key)
@@ -18,7 +18,11 @@ def get_basket(request):
             # if no basket in DB
             key = SIGNER.sign('1')
             print("except key")
-        request.session['order_key'] = key
+
+        mutable = request.GET._mutable
+        request.GET._mutable = True
+        request.GET['order_key'] = key
+        request.GET._mutable = mutable
         basket = Basket(session=key)
         basket.save()
         return basket
@@ -38,7 +42,8 @@ def add_article_to_basket(basket, article, quantity):
 
 def get_basket_data(basket):
     return {'total': basket.total,
-            'is_open': basket.is_open,}
+            'is_open': basket.is_open,
+            'order_key': basket.session}
 
 
 def update_stock(order):

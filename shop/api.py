@@ -64,7 +64,6 @@ class ItemView(APIView):
 @csrf_exempt
 def add_to_basket(request):
     if request.method == 'POST':
-        print(request.session.keys())
         basket = get_basket(request)
         try:
             data = json.loads(request.body.decode('utf-8'))
@@ -89,9 +88,6 @@ def add_to_basket(request):
 def basket(request):
     basket = get_basket(request)
     basket_data = get_basket_data(basket)
-    html_from_view, count = get_items_for_basket(request)
-    basket_data['items'] = html_from_view
-    basket_data['item_count'] = count
     return JsonResponse(basket_data)
 
 
@@ -150,7 +146,6 @@ def checkout(request):
                                      'info': 'status url creaton failed'})
         elif payment_type == 'upn':
             reference = upn(order)
-            del request.session['order_key']
             return JsonResponse({'status': 'prepared',
                                  'reference': reference})
         else:

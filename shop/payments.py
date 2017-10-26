@@ -90,8 +90,8 @@ def paypal_subscriptions_checkout(order, success_url, fail_url):
     else:
         print('You can\'t chackout without items?')
     billing_plan_attributes = {
-        "name": str(order.basket.total),
-        "description": str(order.basket.total),
+        "name": 'Mesečna donacija ' + str(order.basket.total),
+        "description": 'Mesečna donacija ' + str(order.basket.total),
         "merchant_preferences": {
             "auto_bill_amount": "yes",
             "cancel_url": settings.BASE_URL + "api/payment/cancel_subscription/?urlfail=" + f_url,
@@ -124,8 +124,8 @@ def paypal_subscriptions_checkout(order, success_url, fail_url):
         if billing_plan.activate():
             print("Billing Plan [%s] activated successfully" % (billing_plan.id))
             billing_agreement = paypalrestsdk.BillingAgreement({
-                "name": item.article.name,
-                "description": item.article.name,
+                "name": 'Mesečna donacija ' + str(order.basket.total),
+                "description": 'Mesečna donacija ' + str(order.basket.total),
                 "start_date": (datetime.now() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
                 "plan": {
                     "id": billing_plan.id
