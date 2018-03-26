@@ -115,9 +115,9 @@ def paypal_subscriptions_checkout(order, success_url, fail_url):
     }
     billing_plan = paypalrestsdk.BillingPlan(billing_plan_attributes)
     if billing_plan.create():
-        print("Billing Plan [%s] created successfully" % (billing_plan))
+        #print("Billing Plan [%s] created successfully" % (billing_plan))
         if billing_plan.activate():
-            print("Billing Plan [%s] activated successfully" % (billing_plan.id))
+            #print("Billing Plan [%s] activated successfully" % (billing_plan.id))
             billing_agreement = paypalrestsdk.BillingAgreement({
                 "name": 'Mesečna donacija ' + str(order.basket.total),
                 "description": 'Mesečna donacija ' + str(order.basket.total),
@@ -136,7 +136,7 @@ def paypal_subscriptions_checkout(order, success_url, fail_url):
                         return True, approval_url
 
         else:
-            print("NI ŠLO")
+            #print("NI ŠLO")
             return False, ''
 
 
