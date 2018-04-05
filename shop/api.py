@@ -70,7 +70,7 @@ def add_to_basket(request):
             product_id = data['product_id']
             quantity = data['quantity']
         except:
-            return JsonResponse({"Json isn't valid"})
+            return JsonResponse({"status": "Json isn't valid"})
         article = get_object_or_404(Article, id=product_id)
 
         add_article_to_basket(basket, article, quantity)

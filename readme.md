@@ -212,7 +212,7 @@ When your basket is filled an you want to proceed to checkout you can do a singl
     
     # let's fill out the request data
     data = {
-        "payment_type": "personal_takeover",
+        "payment_type": "paypal",
         "name": "Ivan Kunst",
         "address": "Cankarjeva ulica 15 1000 Ljubljana",
         "phone": "031031031",
