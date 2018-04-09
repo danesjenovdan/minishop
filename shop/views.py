@@ -29,7 +29,7 @@ def poloznica(request):
     victim['address1'] = data.get('address1')
     victim['address2'] = data.get('address2')
     
-    return render_to_response('poloznica.html', {'victim': victim, 'bill': bill, 'upn_id': upn_id})
+    return render_to_response('poloznica.html', {'victim': victim, 'bill': bill, 'upn_id': data.get('upn_id')})
 
 
 def getPDFodOrder(request, pk):
