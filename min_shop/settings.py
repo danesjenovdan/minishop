@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'shop',
     'corsheaders',
+    'behaviors.apps.BehaviorsConfig',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,8 @@ BASE_URL = 'http://localhost:8888/'CORS_ORIGIN_ALLOW_ALL = True
 BASE_URL = 'http://localhost:8888/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CEBELCA_KEY = ""
+
+SLACK_KEY = ""
+

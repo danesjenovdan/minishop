@@ -16,3 +16,5 @@ requests==2.18.4
 six==1.11.0
 urllib3==1.22
 django-cors-headers==2.1.0
+slackclient==1.2.1
+django-behaviors==0.4.0

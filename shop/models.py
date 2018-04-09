@@ -1,15 +1,16 @@
 from django.db import models
+from behaviors.behaviors import Timestamped
 
 # Create your models here.
 
-class Category(models.Model):
+class Category(Timestamped):
 	name = models.CharField(max_length=64)
 
 	def __str__(self):
 		return self.name
 
 
-class Article(models.Model):
+class Article(Timestamped):
 	name = models.CharField(max_length=64)
 	category = models.ForeignKey(Category, null=True, blank=True)
 	upc = models.CharField(max_length=64, null=True, blank=True)
@@ -23,14 +24,14 @@ class Article(models.Model):
 		return self.name
 
 
-class Basket(models.Model):
+class Basket(Timestamped):
 	session = models.CharField(max_length=64)
 	articles = models.ManyToManyField(Article, through='Item')
 	total = models.DecimalField(default=0.0, decimal_places=2, max_digits=10)
 	is_open = models.BooleanField(default=True)
 
 
-class Item(models.Model):
+class Item(Timestamped):
 	article = models.ForeignKey(Article)
 	basket = models.ForeignKey(Basket, related_name="items")
 	price =  models.DecimalField(decimal_places=2, max_digits=10)
@@ -38,7 +39,7 @@ class Item(models.Model):
 	def __str__(self):
 		return "item " + self.article.name
 
-class Order(models.Model):
+class Order(Timestamped):
 	basket = models.ForeignKey(Basket, related_name='order')
 	name = models.CharField(max_length=64)
 	address = models.CharField(max_length=256)
@@ -50,6 +51,7 @@ class Order(models.Model):
 	delivery_method = models.CharField(max_length=64, null=True, blank=True)
 	email = models.CharField(max_length=64, null=True, blank=True)
 	info = models.CharField(max_length=256, null=True, blank=True)
+	is_sent = models.BooleanField(default=False)
 
 	def __str__(self):
 		return "order of:" + self.name

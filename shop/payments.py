@@ -49,7 +49,7 @@ def paypal_checkout(order, success_url, fail_url):
         print(payment.error)
         return False, ''
 
-def paypal_execute(request):
+def paypal_execute(request, sc):
     print(request)
     success_url = request.GET.get('urlsuccess', '')
     fail_url = request.GET.get('urlfail', '')
@@ -61,6 +61,16 @@ def paypal_execute(request):
     if payment.execute({"payer_id": payer_id}):
         order = Order.objects.filter(payment_id=payment_id)
         order.update(is_payed=True, payer_id=payer_id)
+        url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
+        msg = "TEST :) Nekdo je naki naroču in plaču je s paypalom: \n"
+        for item in order.basket.items.all():
+            msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
+        msg += "Preveri naročilo: " + url
+        sc.api_call(
+          "chat.postMessage",
+          channel="#parlalize_notif",
+          text=msg
+        )
 
         # update artickles stock
         update_stock(order[0])
@@ -146,13 +156,18 @@ def paypal_subscriptions_checkout(order, success_url, fail_url):
     return False, ''
 
 
-def execute_subscription(request):
+def execute_subscription(request, sc):
     """Customer redirected to this endpoint by PayPal after payment approval
     """
     payment_token = request.GET.get('token', '')
     success_url = request.GET.get('urlsuccess', '')
     fail_url = request.GET.get('urlfail', '')
     billing_agreement_response = paypalrestsdk.BillingAgreement.execute(payment_token)
+    sc.api_call(
+        "chat.postMessage",
+        channel="#parlalize_notif",
+        text="WUUHUUU neko nam bo daju redno donacijo ;)"
+    )
     return True, success_url
 
 def cancel_subscription():

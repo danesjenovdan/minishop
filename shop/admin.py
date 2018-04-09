@@ -16,7 +16,7 @@ class ItemInline(admin.TabularInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['name', 'address', 'is_payed', 'payment_method', 'payment_id', 'delivery_method', 'link_to_basket']
+    list_display = ['name', 'is_donation', 'address', 'is_payed', 'is_sent', 'payment_method', 'payment_id', 'delivery_method', 'link_to_basket']
     search_fields = ['name',]
     list_filter = ['name', 'is_payed']
 
@@ -25,6 +25,9 @@ class OrderAdmin(admin.ModelAdmin):
         return u'<a href="%s">Basket</a>' % (link)
 
     link_to_basket.allow_tags = True
+
+    def is_donation(self, obj):
+        return bool(obj.basket.items.filter(article__name__icontains="donacija"))
 
 class BasketAdmin(admin.ModelAdmin):
     list_display = ('id', 'session', 'total', 'is_open')

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
+from django.conf import settings
 
 from rest_framework.views import APIView
 from rest_framework import status
@@ -12,9 +13,12 @@ from shop.serializers import ArticleSerializer, CategorySerializer, ItemSerializ
 from shop.utils import get_basket, get_basket_data, add_article_to_basket, update_stock, update_basket
 from shop.payments import paypal_checkout, paypal_execute, upn, paypal_cancel, paypal_subscriptions_checkout, execute_subscription, cancel_subscription
 
+from slackclient import SlackClient
+
 import json
 # Create your views here.
 
+sc = SlackClient(settings.SLACK_KEY)
 
 class ProductsList(APIView):
     def get(self, request, format=None):
@@ -146,6 +150,16 @@ def checkout(request):
                                      'info': 'status url creaton failed'})
         elif payment_type == 'upn':
             reference = upn(order)
+            url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
+            msg = "TEST :) Nekdo je naki naroču v shopu pa plaču bo s položnco: \n"
+            for item in basket.items.all():
+                msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
+            msg += "Preveri naročilo: " + url
+            sc.api_call(
+              "chat.postMessage",
+              channel="#parlalize_notif",
+              text=msg
+            )
             return JsonResponse({'status': 'prepared',
                                  'reference': reference})
         else:
@@ -155,7 +169,7 @@ def checkout(request):
 
 
 def payment_execute(request):
-    is_success, url = paypal_execute(request)
+    is_success, url = paypal_execute(request, sc)
     if is_success:
         if 'order_key' in request.session.keys():
             del request.session['order_key']
@@ -167,7 +181,7 @@ def payment_cancel(request):
     return redirect(url)
 
 
-def payment_subscription_execute(request):
+def payment_subscription_execute(request, sc):
     is_success, url = execute_subscription(request)
     if is_success:
         if 'order_key' in request.session.keys():
