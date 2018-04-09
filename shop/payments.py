@@ -63,7 +63,7 @@ def paypal_execute(request, sc):
         order.update(is_payed=True, payer_id=payer_id)
         url = "http://shop.knedl.si/admin/shop/order/" + str(order[0].id) + "/change/"
         msg = "TEST :) Nekdo je naki naroču in plaču je s paypalom: \n"
-        for item in order.basket.items.all():
+        for item in order[0].basket.items.all():
             msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
         msg += "Preveri naročilo: " + url
         sc.api_call(
