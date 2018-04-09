@@ -61,7 +61,7 @@ def paypal_execute(request, sc):
     if payment.execute({"payer_id": payer_id}):
         order = Order.objects.filter(payment_id=payment_id)
         order.update(is_payed=True, payer_id=payer_id)
-        url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
+        url = "http://shop.knedl.si/admin/shop/order/" + str(order[0].id) + "/change/"
         msg = "TEST :) Nekdo je naki naroču in plaču je s paypalom: \n"
         for item in order.basket.items.all():
             msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
