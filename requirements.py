@@ -18,3 +18,4 @@ urllib3==1.22
 django-cors-headers==2.1.0
 slackclient==1.2.1
 django-behaviors==0.4.0
+django-wkhtmltopdf==3.1.0

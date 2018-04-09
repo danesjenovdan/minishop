@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.conf import settings
+from django.core import signing
 
 from rest_framework.views import APIView
 from rest_framework import status
@@ -163,6 +164,7 @@ def checkout(request):
               text=msg
             )
             data = {"id": order.id,
+                    "upn_id": signing.dumps(order.id),
                     "date": datetime.now().strftime('%d.%m.%Y'),
                     "price": order.basket.total,
                     "reference": reference,

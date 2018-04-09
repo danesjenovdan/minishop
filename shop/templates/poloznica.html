@@ -19,6 +19,7 @@
         <!-- Bootstrap -->
         <link href="http://danesjenovdan.si/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -107,7 +108,7 @@
             .poloznicaitemspecial div {
                 text-align: left;
             }
-            @media (max-width: 767px) {
+            @media screen and (max-width: 767px) {
                 .poloznicalabel {
                     font-size: 10px;
                 }
@@ -224,8 +225,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div class="btn btn-pregled btn-pregled-first" onclick="window.print()">Natisni</div>
+                                {% if upn_id %}
+                                    <div class="btn btn-pregled btn-pregled-first" onclick="http://shop.knedl.si/upn_pdf/{{ upn_id }}">PDF</div>
+                                {% endif %}
+                                {% if not pdf %}
+                                    <div class="btn btn-pregled btn-pregled-first" onclick="window.print()">Natisni</div>
+                                {% endif %}
                             </div>
                             
                         </div>

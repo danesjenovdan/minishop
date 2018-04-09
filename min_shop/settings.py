@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'shop',
     'corsheaders',
     'behaviors.apps.BehaviorsConfig',
+    'wkhtmltopdf',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,6 @@ CEBELCA_KEY = ""
 
 SLACK_KEY = ""
 
+WKHTMLTOPDF_CMD_OPTIONS = {
+    'quiet': True,
+}
