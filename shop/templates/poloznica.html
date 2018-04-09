@@ -226,7 +226,7 @@
                                     </div>
                                 </div>
                                 {% if upn_id %}
-                                    <div class="btn btn-pregled btn-pregled-first" onclick="http://shop.knedl.si/upn_pdf/{{ upn_id }}">PDF</div>
+                                    <div class="btn btn-pregled btn-pregled-first" onclick="document.location.href='http://shop.knedl.si/upn_pdf/{{ upn_id }}'">PDF</div>
                                 {% endif %}
                                 {% if not pdf %}
                                     <div class="btn btn-pregled btn-pregled-first" onclick="window.print()">Natisni</div>
