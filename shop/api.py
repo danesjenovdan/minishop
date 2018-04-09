@@ -160,8 +160,16 @@ def checkout(request):
               channel="#parlalize_notif",
               text=msg
             )
-            return JsonResponse({'status': 'prepared',
-                                 'reference': reference})
+            data = {"id": order.id,
+                    "date": datetime.now().strftime('%d.%m.%Y'),
+                    "price": order.basket.total,
+                    "reference": reference,
+                    "code": "?",
+                    "name": order.name,
+                    "address1": order.address,
+                    "address2": "",
+                    "status": "prepared"}
+            return JsonResponse(data)
         else:
             return JsonResponse({'status': 'this payment not defined'})
     else:
