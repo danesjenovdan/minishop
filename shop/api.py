@@ -175,7 +175,7 @@ def checkout(request):
                     "address2": "",
                     "status": "prepared"}
 
-            if order.is_donation:
+            if order.is_donation():
                 data['code'] = "ADCS"
                 data['purpose'] = "Donacija"
             else:
