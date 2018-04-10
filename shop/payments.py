@@ -60,22 +60,28 @@ def paypal_execute(request, sc):
 
     if payment.execute({"payer_id": payer_id}):
         order = Order.objects.filter(payment_id=payment_id)
-        order.update(is_payed=True, payer_id=payer_id)
-        url = "http://shop.knedl.si/admin/shop/order/" + str(order[0].id) + "/change/"
-        msg = "TEST :) " + order[0].name + " je neki naroču in plaču je s paypalom: \n"
-        for item in order[0].basket.items.all():
-            msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
-        msg += "Preveri naročilo: " + url
-        sc.api_call(
-          "chat.postMessage",
-          channel="#parlalize_notif",
-          text=msg
-        )
+        if order:
+            order = order[0]
+            order.is_payed=True
+            order.payer_id=payer_id
+            order.save()
+            url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
+            msg = "TEST :) " + order.name + " je neki naroču in plaču je s paypalom: \n"
+            for item in order.basket.items.all():
+                msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
+            msg += "Preveri naročilo: " + url
+            sc.api_call(
+              "chat.postMessage",
+              channel="#parlalize_notif",
+              text=msg
+            )
 
-        # update artickles stock
-        update_stock(order[0])
-        print("Payment execute successfully")
-        return True, success_url
+            # update artickles stock
+            update_stock(order)
+            print("Payment execute successfully")
+            return True, success_url
+        else:
+            return False, fail_url
     else:
         print(payment.error)
         return False, fail_url
