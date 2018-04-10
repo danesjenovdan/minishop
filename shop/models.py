@@ -1,5 +1,6 @@
 from django.db import models
 from behaviors.behaviors import Timestamped
+from .cebelca import Cebelca
 
 # Create your models here.
 
@@ -52,10 +53,46 @@ class Order(Timestamped):
 	email = models.CharField(max_length=64, null=True, blank=True)
 	info = models.CharField(max_length=256, null=True, blank=True)
 	is_sent = models.BooleanField(default=False)
+	is_on_cebelca = models.BooleanField(default=False)
 
 	def __str__(self):
 		return "order of:" + self.name
 
 	def is_donation(self):
 		return bool(self.basket.items.filter(article__name__icontains="donacija"))
+
+	def save(self, *args, **kwargs):
+		if not self.is_donation():
+			if self.is_payed:
+				if not self.is_on_cebelca:
+					# prepare address
+					address = self.address.split(',')
+					if len(address) > 1:
+						post = address[1].strip().split(" ")
+						city = " ".join(post[1:])
+						post = post[0]
+					else:
+						post = ""
+						city = ""
+
+					payment_methods = {'upn': 1,
+									   'paypal': 5}
+					 
+					try:
+						pay_method = payment_methods[self.payment_method]
+					except:
+						pay_method = 1
+					
+					c = Cebelca(api_type="prod")
+					c.add_partner(self.name, address[0], post, city)
+					c.add_header()
+					for item in self.basket.items.all():
+						c.add_item(item.article.name, item.quantity, item.price, vat=0)
+					c.set_invoice_paid(pay_method, self.basket.total)
+					c.finalize_invoice()
+					c.send_mail(self.email, 'Naročilo iz DJND trgovine', 'Tuki pa pride en template :)')
+					self.is_on_cebelca = True
+					self.save()
+		super(Order, self).save(*args, **kwargs)
+
 

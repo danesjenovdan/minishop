@@ -155,7 +155,7 @@ def checkout(request):
         elif payment_type == 'upn':
             reference = upn(order)
             url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
-            msg = "TEST :) Nekdo je naki naroču v shopu pa plaču bo s položnco: \n"
+            msg = "TEST :) " + order.name + " je neki naroču v shopu pa plaču bo s položnco: \n"
             for item in basket.items.all():
                 msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
             msg += "Preveri naročilo: " + url
@@ -233,7 +233,7 @@ def send_as_email(request):
     send_mail(
         data.get('title', 'untitled'),
         ((data.get('email', '') + ' nam sproca: \n' ) if data.get('email', '') else '') + data.get('body', 'empty'),
-        settings.SUPPORT_MAIL,
+        settings.FROM_MAIL,
         [settings.SUPPORT_MAIL],
         fail_silently=False,
     )
