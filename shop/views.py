@@ -42,7 +42,7 @@ def getPDFodOrder(request, pk):
     bill['price'] = order.basket.total
     bill['referencemath'] = order.payment_id
 
-    if order.is_donation:
+    if order.is_donation():
         bill['code'] = "ADCS"
         bill['purpose'] = "Donacija"
     else:
