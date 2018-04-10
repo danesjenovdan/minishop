@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.conf import settings
 from django.core import signing
+from django.core.mail import send_mail
 
 from rest_framework.views import APIView
 from rest_framework import status
@@ -215,3 +216,17 @@ def get_items_for_basket(request):
     html_from_view = ItemView.get(ItemView, request=request).data
     count =  sum([item['quantity'] for item in html_from_view])
     return html_from_view, count
+
+
+@csrf_exempt
+def send_as_email(request):
+    data = json.loads(request.body.decode('utf8'))
+
+    send_mail(
+        data.get('title', 'untitled'),
+        ((data.get('email', '') + ' nam sproca: \n' ) if data.get('email', '') else '') + data.get('body', 'empty'),
+        settings.SUPPORT_MAIL,
+        [settings.SUPPORT_MAIL],
+        fail_silently=False,
+    )
+    return JsonResponse({"status": "sent"})

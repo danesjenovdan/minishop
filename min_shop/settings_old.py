@@ -126,16 +126,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-paypalrestsdk.configure({
-    "mode": "sandbox", # sandbox or live
-    "client_id": "",
-
 SALT = 'somthing/stupid'
 
-BASE_URL = 'http://localhost:8888/'CORS_ORIGIN_ALLOW_ALL = True
 BASE_URL = 'http://localhost:8888/'
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -147,3 +144,9 @@ SLACK_KEY = ""
 WKHTMLTOPDF_CMD_OPTIONS = {
     'quiet': True,
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+
