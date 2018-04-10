@@ -203,7 +203,15 @@ When your basket is filled an you want to proceed to checkout you can do a singl
     print (response.content)
     {
         "reference": "SI05 0000000009",
-        "status": "prepared"
+        "id": order.id,
+        "upn_id": "adsiuh3urh3u2hf838",
+        "date": "1.1.2018",
+        "price": 50.00,
+        "code": "ABAB",
+        "name": "Ivan Riban",
+        "address1": "Bizovik 13",
+        "address2": "",
+        "status": "prepared"}
     } 
 
 

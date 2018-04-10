@@ -174,6 +174,14 @@ def checkout(request):
                     "address1": order.address,
                     "address2": "",
                     "status": "prepared"}
+
+            if order.is_donation:
+                data['code'] = "ADCS"
+                data['purpose'] = "Donacija"
+            else:
+                data['code'] = "GDSV"
+                data['purpose'] = "Položnica za račun št. " + str(order.id)
+
             return JsonResponse(data)
         else:
             return JsonResponse({'status': 'this payment not defined'})

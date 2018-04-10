@@ -56,3 +56,6 @@ class Order(Timestamped):
 	def __str__(self):
 		return "order of:" + self.name
 
+	def is_donation(self):
+		return bool(self.basket.items.filter(article__name__icontains="donacija"))
+

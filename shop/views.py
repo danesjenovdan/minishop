@@ -23,6 +23,7 @@ def poloznica(request):
     bill['price'] = data.get('price')
     bill['referencemath'] = data.get('reference')
     bill['code'] = data.get('code')
+    bill['purpose'] = data.get('purpose')
     
     victim = {}
     victim['name'] = data.get('name')
@@ -40,7 +41,13 @@ def getPDFodOrder(request, pk):
     bill['date'] = datetime.now().strftime('%d.%m.%Y')
     bill['price'] = order.basket.total
     bill['referencemath'] = order.payment_id
-    bill['code'] = "?"
+
+    if order.is_donation:
+        bill['code'] = "ADCS"
+        bill['purpose'] = "Donacija"
+    else:
+        bill['code'] = "GDSV"
+        bill['purpose'] = "Položnica za račun št. " + str(order.id)
     
     address = order.address.split(',')
 

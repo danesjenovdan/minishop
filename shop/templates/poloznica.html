@@ -108,6 +108,9 @@
             .poloznicaitemspecial div {
                 text-align: left;
             }
+            .btn-pregled {
+                margin-top: 10px;
+            }
             @media screen and (max-width: 767px) {
                 .poloznicalabel {
                     font-size: 10px;
@@ -190,7 +193,7 @@
                                                 </div>
                                                 <div class="poloznicapostkoda">
                                                     <div class="poloznicalabel">Namen / rok placila</div>
-                                                    <div class="poloznicainput"><br></div>
+                                                    <div class="poloznicainput"><br>{{ bill.purpose }}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -239,7 +242,9 @@
                 <div class="row">
                     <div class="col-md-12 centermycontent">
                         <p class="footnote">Danes je nov dan, Inštitut za druga vprašanja</p>
-                        <a class="footnotepogoji" href="../Pogoji%20poslovanja.pdf" target="_blank">pogoji poslovanja</a>
+                        {% if not pdf %}
+                            <a class="footnotepogoji" href="../Pogoji%20poslovanja.pdf" target="_blank">pogoji poslovanja</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
