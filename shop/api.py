@@ -186,7 +186,7 @@ def checkout(request):
             pdf = getPDFodOrder(None, signing.dumps(order.id)).render().content
             email = EmailMessage(
                 'Položnica za tvoj nakup <3',
-                'Hvala za tvoje naročilo. V priponki ti pošiljamo položnico. Naročilo oddamo na pošto takoj, ko jo poravnaš.\n \n Ekipa Danes je nov dan',
+                'Hvala za tvoje naročilo. V priponki ti pošiljamo položnico. Naročilo oddamo na pošto takoj, ko jo poravnaš.\n \nEkipa Danes je nov dan',
                 settings.FROM_MAIL,
                 [order.email],
                 reply_to=[settings.FROM_MAIL],

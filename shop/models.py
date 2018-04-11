@@ -90,7 +90,7 @@ class Order(Timestamped):
 						c.add_item(item.article.name, item.quantity, item.price, vat=0)
 					c.set_invoice_paid(pay_method, self.basket.total)
 					c.finalize_invoice()
-					c.send_mail(self.email, 'Hvala <3', 'Zdravo,\n\nhvala lepa za tvoj nakup in čestitke za dober izbor.\n\nČe med čakanjem nanjo bereš agrumente, roba garantirano prej pride. ;)\n\nIskreno upajoč, da ti bo kupljeno v veselje, te lepo pozdravlja\n\nekipa Danes je nov dan\n')
+					c.send_mail(self.email, 'Hvala <3', 'Zdravo,\n\nhvala lepa za tvoj nakup in čestitke za dober izbor.\n\nČe med čakanjem nanjo bereš agrumente, roba garantirano prej pride. ;)\n\nIskreno upajoč, da ti bo kupljeno v veselje, te lepo pozdravlja\n\nEkipa Danes je nov dan\n')
 					self.is_on_cebelca = True
 					self.save()
 		super(Order, self).save(*args, **kwargs)
