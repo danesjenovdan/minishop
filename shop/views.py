@@ -36,6 +36,8 @@ def poloznica(request):
                                      bill['price'],
                                      bill['referencemath'],
                                      bill['purpose'])
+
+    qr_code = "\n".join(qr_code.split("\n")[2:])
     
     return render_to_response('poloznica.html', {'victim': victim,
                                                  'bill': bill,
