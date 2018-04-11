@@ -33,7 +33,7 @@ def poloznica(request):
     qr_code = qrcode.generate_upn_qr(victim['name'],
                                      victim['address1'],
                                      victim['address2'],
-                                     bill['price'],
+                                     float(bill['price']),
                                      bill['referencemath'],
                                      bill['purpose'])
 
