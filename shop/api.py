@@ -155,13 +155,13 @@ def checkout(request):
         elif payment_type == 'upn':
             reference = upn(order)
             url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
-            msg = "TEST :) " + order.name + " je neki naroču v shopu pa plaču bo s položnco: \n"
+            msg = order.name + " je neki naroču v shopu pa plaču bo s položnco: \n"
             for item in basket.items.all():
                 msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
             msg += "Preveri naročilo: " + url
             sc.api_call(
               "chat.postMessage",
-              channel="#parlalize_notif",
+              channel="#danesjenovdan_si",
               text=msg
             )
             data = {"id": order.id,
