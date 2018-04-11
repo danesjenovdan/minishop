@@ -183,7 +183,7 @@ def checkout(request):
                 data['code'] = "GDSV"
                 data['purpose'] = "Položnica za račun št. " + str(order.id)
 
-            pdf = getPDFodOrder(None, signing(dumps(order.id))).render().content
+            pdf = getPDFodOrder(None, signing.dumps(order.id)).render().content
             email = EmailMessage(
                 'Položnica za tvoj nakup <3',
                 'Hvala za tvoje naročilo. V priponki ti pošiljamo položnico. Naročilo oddamo na pošto takoj, ko jo poravnaš.\n \n Ekipa Danes je nov dan',
