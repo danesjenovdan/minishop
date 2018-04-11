@@ -68,6 +68,10 @@
                 border: 2px solid #f6a780;
                 padding: 5px;
             }
+            .poloznicainput svg{
+                width: 100%;
+                height: 100%;
+            }
             .poloznicaeur {
                 width: 25%;
                 display: inline-block;
@@ -172,7 +176,7 @@
                                         </div>
                                         <div class="poloznicaitem">
                                             <div class="poloznicalabel">Referenca prejemnika</div>
-                                            <div class="poloznicainput">{{ bill.referencemath }}{{ bill.id }}</div>
+                                            <div class="poloznicainput">{{ bill.referencemath }}</div>
                                         </div>
                                         <div class="poloznicaitem">
                                             <div class="poloznicalabel">Ime prejemnika</div>
@@ -185,7 +189,7 @@
                                             <div class="poloznicaitem">
                                                 <div class="poloznicalabel">Koda QR</div>
                                                 <div class="poloznicainput">
-                                                    {# TU NOT DEJ SVG #}
+                                                    {{ qr_code | safe}}
                                                 </div>
                                             </div>
                                         </div>
@@ -227,7 +231,7 @@
                                             </div>
                                             <div class="poloznicaitem">
                                                 <div class="poloznicalabel">Referenca</div>
-                                                <div class="poloznicainput">{{ bill.referencemath }}{{ bill.id }}</div>
+                                                <div class="poloznicainput">{{ bill.referencemath }}</div>
                                             </div>
                                             <div class="poloznicaitem">
                                                 <div class="poloznicalabel">Ime in naslov</div>

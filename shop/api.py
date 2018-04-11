@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.conf import settings
 from django.core import signing
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 
 from rest_framework.views import APIView
 from rest_framework import status
@@ -16,6 +16,7 @@ from shop.models import Article, Basket, Order, Category, Item
 from shop.serializers import ArticleSerializer, CategorySerializer, ItemSerializer
 from shop.utils import get_basket, get_basket_data, add_article_to_basket, update_stock, update_basket
 from shop.payments import paypal_checkout, paypal_execute, upn, paypal_cancel, paypal_subscriptions_checkout, execute_subscription, cancel_subscription
+from shop.views import getPDFodOrder
 
 from slackclient import SlackClient
 
@@ -182,6 +183,16 @@ def checkout(request):
                 data['code'] = "GDSV"
                 data['purpose'] = "Položnica za račun št. " + str(order.id)
 
+            pdf = getPDFodOrder(None, signing(dumps(order.id))).render().content
+            email = EmailMessage(
+                'Položnica za tvoj nakup <3',
+                'Hvala za tvoje naročilo. V priponki ti pošiljamo položnico. Naročilo oddamo na pošto takoj, ko jo poravnaš.\n \n Ekipa Danes je nov dan',
+                settings.FROM_MAIL,
+                [order.email],
+                reply_to=[settings.FROM_MAIL],
+            )
+            email.attach('racun.pdf', pdf, 'application/pdf')
+            email.send(fail_silently=True)
             return JsonResponse(data)
         else:
             return JsonResponse({'status': 'this payment not defined'})

@@ -5,7 +5,7 @@ from django.core import signing
 
 import json
 
-from . import models
+from . import models, qrcode
 
 from datetime import datetime
 from wkhtmltopdf.views import PDFTemplateResponse
@@ -29,8 +29,18 @@ def poloznica(request):
     victim['name'] = data.get('name')
     victim['address1'] = data.get('address1')
     victim['address2'] = data.get('address2')
+
+    qr_code = qrcode.generate_upn_qr(victim['name'],
+                                     victim['address1'],
+                                     victim['address2'],
+                                     bill['price'],
+                                     bill['referencemath'],
+                                     bill['purpose'])
     
-    return render_to_response('poloznica.html', {'victim': victim, 'bill': bill, 'upn_id': data.get('upn_id')})
+    return render_to_response('poloznica.html', {'victim': victim,
+                                                 'bill': bill,
+                                                 'upn_id': data.get('upn_id'),
+                                                 'qr_code': qr_code})
 
 
 def getPDFodOrder(request, pk):
@@ -56,9 +66,17 @@ def getPDFodOrder(request, pk):
     victim['address1'] = address[0]
     victim['address2'] = address[1] if len(address) > 1 else ''
 
+    qr_code = qrcode.generate_upn_qr(victim['name'],
+                                     victim['address1'],
+                                     victim['address2'],
+                                     bill['price'],
+                                     bill['referencemath'],
+                                     bill['purpose'])
+    qr_code = "\n".join(qr_code.split("\n")[2:])
+
     return PDFTemplateResponse(request=request,
                                template='poloznica.html',
                                filename='upn_djnd.pdf',
-                               context={'victim': victim, 'bill': bill, 'pdf': True},
+                               context={'victim': victim, 'bill': bill, 'pdf': True, 'qr_code': qr_code},
                                show_content_in_browser=True,
                                )
