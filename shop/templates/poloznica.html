@@ -4,13 +4,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
         <!-- meta info + OG tags -->
         <title>Položnica za račun št.: {{ bill.id }}</title>
         <meta name="description" content="Portal Danes je nov dan je nastal jeseni 2012 kot sopotnik, integralni del in podpornik vstajniških gibanj. Od septembra 2013 delujemo kot inštitut, ki se osredotoča na (digitalno) politično participacijo, transparentnost in nadzor.">
         <meta name="author" content="Danes je nov dan, Inštitut za druga vprašanja">
         <link rel="shortcut icon" href="http://danesjenovdan.si/favicon.ico">
-        
+
         <meta property="og:title" content="Formalnosti"/>
         <meta property="og:type" content="article" />
         <meta property="og:description" content="Portal Danes je nov dan je nastal jeseni 2012 kot sopotnik, integralni del in podpornik vstajniških gibanj. Od septembra 2013 delujemo kot inštitut, ki se osredotoča na (digitalno) politično participacijo, transparentnost in nadzor." />
@@ -26,21 +26,21 @@
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-        
+
         <!-- font -->
         <link href='http://fonts.googleapis.com/css?family=Titillium+Web:200,300,400,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
-        
+
         <!-- icons -->
         <link href="http://danesjenovdan.si/icons_/icons.css" rel="stylesheet">
-        
+
         <!-- CSS -->
         <link href="http://danesjenovdan.si/css/guide.css" rel="stylesheet">
-        
+
         <!-- poloznica CSS -->
         <style>
             .poloznicacontainer {
                 width: 100%;
-                
+
                 overflow: hidden;
                 margin-bottom: 30px;
             }
@@ -68,6 +68,10 @@
                 border: 2px solid #f6a780;
                 padding: 5px;
             }
+            .poloznicainput svg{
+                width: 100%;
+                height: 100%;
+            }
             .poloznicaeur {
                 width: 25%;
                 display: inline-block;
@@ -76,7 +80,7 @@
                 width: 70%;
                 display: inline-block;
             }
-            
+
             .poloznicadesnozgoraj {
                 background-color: #fae2c8;
                 padding: 5px;
@@ -85,7 +89,7 @@
                 background-color: #fff3d0;
                 padding: 5px;
             }
-            
+
             .poloznicaeurdesno {
                 width: 10%;
                 display: inline-block;
@@ -120,7 +124,7 @@
                 }
             }
         </style>
-        
+
         <script>
             (function() {
                 if ("-ms-user-select" in document.documentElement.style && navigator.userAgent.match(/IEMobile\/10\.0/)) {
@@ -132,7 +136,7 @@
                 }
             })();
         </script>
-        
+
     </head>
     <body>
         <div class="container-fluid">
@@ -146,7 +150,7 @@
                                 <p>Danes je nov dan, inštitut za druga vprašanja</p>
                                 <p>Parmova 20, 1000 Ljubljana</p>
                                 <p style="margin-bottom: 40px;">Davčna številka: 54561710</p>
-                                
+
                                 <div class="poloznicacontainer">
                                     <div class="poloznicalevo">
                                         <div class="poloznicaitem">
@@ -155,9 +159,9 @@
                                         </div>
                                         <div class="poloznicaitem">
                                             <div class="poloznicalabel">Namen / rok placila</div>
-                                            <div class="poloznicainput"><br>{{ bill.purpose }}</div>
+                                            <div class="poloznicainput">{{ bill.purpose }}</div>
                                         </div>
-                                        
+
                                         <div class="poloznicaitem">
                                             <div class="poloznicaeur">EUR</div>
                                             <div class="poloznicaposteur">
@@ -165,23 +169,31 @@
                                                 <div class="poloznicainput">{{ bill.price }}</div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="poloznicaitem">
                                             <div class="poloznicalabel">IBAN prejemnika in BIC banke prejemnika</div>
                                             <div class="poloznicainput">SI56 6100 0000 5740 710 HDELSI22</div>
                                         </div>
                                         <div class="poloznicaitem">
                                             <div class="poloznicalabel">Referenca prejemnika</div>
-                                            <div class="poloznicainput">{{ bill.referencemath }}{{ bill.id }}</div>
+                                            <div class="poloznicainput">{{ bill.referencemath }}</div>
                                         </div>
                                         <div class="poloznicaitem">
                                             <div class="poloznicalabel">Ime prejemnika</div>
                                             <div class="poloznicainput">Danes je nov dan, inštitut za druga vprašanja<br>Parmova 20<br>1000 Ljubljana</div>
                                         </div>
-                                        
+
                                     </div>
                                     <div class="poloznicadesno">
-                                        <div class="poloznicadesnozgoraj">
+                                        <div class="poloznicadesnozgoraj" style="width:28%; float:left">
+                                            <div class="poloznicaitem">
+                                                <div class="poloznicalabel">Koda QR</div>
+                                                <div class="poloznicainput">
+                                                    {{ qr_code | safe}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="poloznicadesnozgoraj" style="width:72%; float:left">
                                             <div class="poloznicaitem">
                                                 <div class="poloznicalabel">Ime in naslov</div>
                                                 <div class="poloznicainput">{{ victim.name }}<br>{{ victim.address1 }}<br>{{ victim.address2 }}</div>
@@ -193,7 +205,7 @@
                                                 </div>
                                                 <div class="poloznicapostkoda">
                                                     <div class="poloznicalabel">Namen / rok placila</div>
-                                                    <div class="poloznicainput"><br>{{ bill.purpose }}</div>
+                                                    <div class="poloznicainput">{{ bill.purpose }}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -219,7 +231,7 @@
                                             </div>
                                             <div class="poloznicaitem">
                                                 <div class="poloznicalabel">Referenca</div>
-                                                <div class="poloznicainput">{{ bill.referencemath }}{{ bill.id }}</div>
+                                                <div class="poloznicainput">{{ bill.referencemath }}</div>
                                             </div>
                                             <div class="poloznicaitem">
                                                 <div class="poloznicalabel">Ime in naslov</div>
@@ -235,7 +247,7 @@
                                     <div class="btn btn-pregled btn-pregled-first" onclick="window.print()">Natisni</div>
                                 {% endif %}
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -249,7 +261,7 @@
                 </div>
             </div>
         </div>
-        
+
         <form id="paypalform" class="hidden" name="_xclick" action="https://www.paypal.com/us/cgi-bin/webscr" method="post">
         <input type="hidden" name="cmd" value="_xclick">
         <input type="hidden" name="business" value="maschinna@gmail.com">
@@ -257,23 +269,23 @@
         <input type="hidden" name="item_name" id="paypalitemname" value="">
         <input type="hidden" name="amount" id="paypalprice" value="1">
         <input type="image" src="http://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
-        
+
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="http://danesjenovdan.si/bootstrap/js/bootstrap.min.js"></script>
-        
+
         <!-- jQuery cookie -->
         <script src="http://danesjenovdan.si/js/jquery.cookie.js"></script>
         <script src="http://danesjenovdan.si/js/nsa.js"></script>
-        
+
         <!-- mailing -->
         <script src="http://danesjenovdan.si/js/mandrill.min.js"></script>
         <script src="http://danesjenovdan.si/js/mailing.js"></script>
-            
+
         <!-- frontend magic -->
         <script src="http://danesjenovdan.si/js/front.js"></script>
-            
+
         <script>
             $('.pregleditemdescription.majica').each(function(i, e) {
                 $(e).text(
@@ -285,6 +297,6 @@
                 );
             });
         </script>
-        
+
     </body>
 </html>
