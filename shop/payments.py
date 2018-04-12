@@ -183,7 +183,7 @@ def cancel_subscription():
 
 
 def upn(order):
-    ref = 'SI05 ' + str(order.id).zfill(10)
+    ref = 'SI00 ' + str(order.id).zfill(10)
     order.payment_id=ref
     order.save()
     items = order.basket.items.all()
