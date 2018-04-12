@@ -66,13 +66,13 @@ def paypal_execute(request, sc):
             order.payer_id=payer_id
             order.save()
             url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
-            msg = "TEST :) " + order.name + " je neki naroču in plaču je s paypalom: \n"
+            msg = order.name + " je neki naroču in plaču je s paypalom: \n"
             for item in order.basket.items.all():
                 msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
             msg += "Preveri naročilo: " + url
             sc.api_call(
               "chat.postMessage",
-              channel="#parlalize_notif",
+              channel="#danesjenovdan_si",
               text=msg
             )
 
@@ -171,7 +171,7 @@ def execute_subscription(request, sc):
     billing_agreement_response = paypalrestsdk.BillingAgreement.execute(payment_token)
     sc.api_call(
         "chat.postMessage",
-        channel="#parlalize_notif",
+        channel="#danesjenovdan_si",
         text="WUUHUUU neko nam bo daju redno donacijo ;)"
     )
     return True, success_url
