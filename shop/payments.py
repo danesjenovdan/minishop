@@ -66,7 +66,7 @@ def paypal_execute(request, sc):
             order.payer_id=payer_id
             order.save()
             url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
-            msg = order.name + " je neki naroču in plaču je s paypalom: \n"
+            msg = order.name + " je nekaj naročil in plačal je s paypalom: \n"
             for item in order.basket.items.all():
                 msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
             msg += "Preveri naročilo: " + url
@@ -172,7 +172,7 @@ def execute_subscription(request, sc):
     sc.api_call(
         "chat.postMessage",
         channel="#danesjenovdan_si",
-        text="WUUHUUU neko nam bo daju redno donacijo ;)"
+        text="WUUHUUU nekdo nam je privoščil redno donacijo ;)"
     )
     return True, success_url
 
