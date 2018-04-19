@@ -125,7 +125,8 @@ class Cebelca(object):
             subject, from_email, to = title, settings.FROM_MAIL, email
             text_content = strip_tags(body)
             html_content = body
-            msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
             msg.attach('racun.pdf', pdf[1], 'application/pdf')
             msg.send()
 
