@@ -2,7 +2,8 @@ import requests
 import random
 
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
 
 from datetime import datetime, timedelta
 
@@ -121,15 +122,13 @@ class Cebelca(object):
         print("send mail")
         pdf = self.get_pdf()
         if pdf[0]:
-            email = EmailMessage(
-                title,
-                body,
-                settings.FROM_MAIL,
-                [email],
-                reply_to=[settings.FROM_MAIL],
-            )
-            email.attach('racun.pdf', pdf[1], 'application/pdf')
-            email.send(fail_silently=False)
+            subject, from_email, to = title, settings.FROM_MAIL, email
+            text_content = strip_tags(body)
+            html_content = body
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach('racun.pdf', pdf[1], 'application/pdf')
+            msg.send()
+
             return True, 'Sent'
         else:
             return False, 'Cannot get pdf'
