@@ -5,7 +5,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.conf import settings
 from django.core import signing
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import get_template
+from django.utils.html import strip_tags
 
 from rest_framework.views import APIView
 from rest_framework import status
@@ -183,16 +185,33 @@ def checkout(request):
                 data['code'] = "GDSV"
                 data['purpose'] = "Položnica za račun št. " + str(order.id)
 
+            total = order.basket.total
+            reference = order.payment_id
+            iban = settings.IBAN.replace(' ', '')
+            to_name = settings.TO_NAME.strip()
+            to_address1 = settings.TO_ADDRESS1.strip()
+            to_address2 = settings.TO_ADDRESS2.strip()
+
+            html = get_template('email_poloznica.html')
+            context = { 'total': total,
+                        'reference': reference,
+                        'iban': iban,
+                        'to_address1': to_address1,
+                        'to_address2': to_address2,
+                        'code': data['code'],
+                        'purpose': data['purpose'],
+                        'bic': 'HDELSI22'}
+            html_content = html.render(context)
+
             pdf = getPDFodOrder(None, signing.dumps(order.id)).render().content
-            email = EmailMessage(
-                'Položnica za tvoj nakup <3',
-                'Hvala za tvoje naročilo. V priponki ti pošiljamo položnico. Naročilo oddamo na pošto takoj, ko jo poravnaš.\n \nEkipa Danes je nov dan',
-                settings.FROM_MAIL,
-                [order.email],
-                reply_to=[settings.FROM_MAIL],
-            )
-            email.attach('racun.pdf', pdf, 'application/pdf')
-            email.send(fail_silently=True)
+
+            subject, from_email, to = 'Položnica za tvoj nakup <3', settings.FROM_MAIL, order.email
+            text_content = strip_tags(html_content)
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.attach('racun.pdf', pdf, 'application/pdf')
+            msg.send()
+
             return JsonResponse(data)
         else:
             return JsonResponse({'status': 'this payment not defined'})
