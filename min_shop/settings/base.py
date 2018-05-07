@@ -107,3 +107,5 @@ USE_TZ = True
 WKHTMLTOPDF_CMD_OPTIONS = {
     'quiet': True,
 }
+
+WKHTMLTOPDF_CMD = 'xvfb-run -a wkhtmltopdf'
