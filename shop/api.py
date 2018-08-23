@@ -29,7 +29,8 @@ sc = SlackClient(settings.SLACK_KEY)
 
 class ProductsList(APIView):
     def get(self, request, format=None):
-        articles = Article.objects.filter(stock__gt=0)
+        #articles = Article.objects.filter(stock__gt=0)
+        articles = [article for article in Article.objects.all() if article.get_stock > 0]
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
 

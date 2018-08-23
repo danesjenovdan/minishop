@@ -1,5 +1,5 @@
 from django.contrib import admin
-from shop.models import Article, Basket, Order, Item, Category
+from shop.models import Article, Basket, Order, Item, Category, BoundleItem
 from django.core.urlresolvers import reverse
 
 
@@ -42,3 +42,4 @@ admin.site.register(Article, ArticleAdmin)
 admin.site.register(Basket, BasketAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Item)
+admin.site.register(BoundleItem)

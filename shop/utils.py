@@ -50,8 +50,15 @@ def update_stock(order):
     items = order.basket.items.all()
     for item in items:
         article = item.article
-        article.stock = article.stock - item.quantity
-        article.save()
+        boundle = article.boundle_items.all()
+        if boundle:
+            for b_article in boundle:
+                article = b_article.article
+                article.stock = article.stock - item.quantity
+                article.save()
+        else:
+            article.stock = article.stock - item.quantity
+            article.save()
 
 
 def update_basket(basket):

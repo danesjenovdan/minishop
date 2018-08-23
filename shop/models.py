@@ -20,9 +20,27 @@ class Article(Timestamped):
 	stock = models.IntegerField(default=0)
 	image = models.ImageField(upload_to='images/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
 	mergable = models.BooleanField(default=False)
+	articles = models.ManyToManyField('self', blank=True, through='BoundleItem', symmetrical=False)
 
 	def __str__(self):
 		return self.name
+
+	@property
+	def get_stock(self):
+		articles = self.boundle_items.all()
+		if articles:
+			print(self.name, ' je boundle ', self.stock, min([article.article.stock for article in articles]))
+			return min([article.article.stock for article in articles])
+		else:
+			return self.stock
+
+
+class BoundleItem(Timestamped):
+	article = models.ForeignKey('Article', related_name='in_boundle')
+	boundle = models.ForeignKey('Article', related_name='boundle_items')
+
+	def __str__(self):
+		return 'Boundle: ' + (self.boundle.name if self.boundle else '') + ' <--> Article: ' + (self.article.name if self.article else '')
 
 
 class Basket(Timestamped):
