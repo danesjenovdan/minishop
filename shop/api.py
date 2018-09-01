@@ -233,8 +233,8 @@ def payment_cancel(request):
     return redirect(url)
 
 
-def payment_subscription_execute(request, sc):
-    is_success, url = execute_subscription(request)
+def payment_subscription_execute(request):
+    is_success, url = execute_subscription(request, sc)
     if is_success:
         if 'order_key' in request.session.keys():
             del request.session['order_key']
