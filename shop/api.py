@@ -158,7 +158,7 @@ def checkout(request):
                                      'info': 'status url creaton failed'})
         elif payment_type == 'upn':
             reference = upn(order)
-            url = "http://shop.knedl.si/admin/shop/order/" + str(order.id) + "/change/"
+            url = "https://shop.djnd.si/admin/shop/order/" + str(order.id) + "/change/"
             msg = order.name + " je nekaj naročil in palčal bo s položnico: \n"
             for item in basket.items.all():
                 msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
