@@ -18,5 +18,5 @@ urlpatterns = [
     url(r'^payment/cancel_subscription/', cancel_subscription),
     url(r'^clear', clear_session),
     url(r'^send_as_email', send_as_email),
-    url(r'^bussines', bussines)
+    url(r'^business', bussines)
     ]
