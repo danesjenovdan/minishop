@@ -176,7 +176,7 @@ def execute_subscription(request, sc):
     )
     return True, success_url
 
-def cancel_subscription():
+def cancel_subscription(request):
     fail_url = request.GET.get('urlfail', '')
     return fail_url
 
