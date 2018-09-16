@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from shop.api import (ProductsList, CategoryList, ItemView, add_to_basket,
                       basket, checkout, payment_execute, payment_cancel,
-                      clear_session, payment_subscription_execute, cancel_subscription, send_as_email)
+                      clear_session, payment_subscription_execute, cancel_subscription,
+                      send_as_email, bussines)
 
 urlpatterns = [
     url(r'^products/', ProductsList.as_view()),
@@ -17,4 +18,5 @@ urlpatterns = [
     url(r'^payment/cancel_subscription/', cancel_subscription),
     url(r'^clear', clear_session),
     url(r'^send_as_email', send_as_email),
+    url(r'^bussines', , bussines)
     ]

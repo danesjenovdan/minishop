@@ -242,7 +242,8 @@ def payment_subscription_execute(request):
     return redirect(url)
 
 def payment_subscription_cancel(request):
-    url = cancel_subscription(request)
+    #url = cancel_subscription(request)
+    url = request.GET.get('urlfail', '')
     return redirect(url)
 
 
@@ -269,3 +270,28 @@ def send_as_email(request):
         fail_silently=False,
     )
     return JsonResponse({"status": "sent"})
+
+
+
+@csrf_exempt
+def bussines(request):
+    context = {}
+    if request.POST:
+        email = request.POST["email"]
+        message = request.POST["message"]
+        try:
+            send_mail(
+                '[parlameter] Poslovna donacija',
+                '<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: <.p><p>'+ message + '</p>',
+                'donacije@parlameter.si',
+                ['info@parlametar.hr', 'info@parlameter.si'],
+                fail_silently=False,
+            )
+            context["status"] = "sent"
+        except:
+            client.captureException()
+            context["status"] = "fail"
+    else:
+        context["status"] = "ni POST"
+
+    return JsonResponse(context)
