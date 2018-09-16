@@ -284,7 +284,8 @@ def bussines(request):
                 '[parlameter] Poslovna donacija',
                 '<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: <.p><p>'+ message + '</p>',
                 'donacije@parlameter.si',
-                ['info@parlametar.hr', 'info@parlameter.si'],
+                ['info@parlametar.hr', 'info@parlameter.si', 'vsi@danesjenovdan.si'],
+                html_message='<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: <.p><p>'+ message + '</p>',
                 fail_silently=False,
             )
             context["status"] = "sent"
