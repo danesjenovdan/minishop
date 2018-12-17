@@ -14,8 +14,6 @@ from shop.utils import update_stock
 def paypal_checkout(order, success_url, fail_url):
     s_url = urllib.parse.quote(success_url, safe='~()*!.\'')
     f_url = urllib.parse.quote(fail_url, safe='~()*!.\'')
-    print(s_url)
-    print(f_url)
     payment = paypalrestsdk.Payment({
         "intent": "sale",
         "payer": {
@@ -32,30 +30,22 @@ def paypal_checkout(order, success_url, fail_url):
             "description": "Hvala za nakup <3"}]})
 
     if payment.create():
-        print("Payment created successfully")
-        print(payment)
         order.payment_id = payment.id
         order.save()
         for link in payment.links:
-            print(link)
             if link.rel == "approval_url":
-                print (link.href)
                 # Convert to str to avoid google appengine unicode issue
                 # https://github.com/paypal/rest-api-sdk-python/pull/58
                 approval_url = str(link.href)
-                print('redirect to', approval_url)
                 return True, approval_url
     else:
-        print(payment.error)
         return False, ''
 
 def paypal_execute(request, sc):
-    print(request)
     success_url = request.GET.get('urlsuccess', '')
     fail_url = request.GET.get('urlfail', '')
     payment_id = request.GET.get('paymentId', '')
     payer_id = request.GET.get('PayerID', '')
-    print(payment_id)
     payment = paypalrestsdk.Payment.find(payment_id)
 
     if payment.execute({"payer_id": payer_id}):
