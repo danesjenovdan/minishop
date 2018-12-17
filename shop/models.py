@@ -115,8 +115,8 @@ class Order(Timestamped):
 					html = get_template('thanksgiving.html')
 					html_content = None
 					if len(items) == 1:
-						if items[0].custom_mail:
-							html_content = html.render({'custom_msg': items[0].custom_mail})
+						if items[0].article.custom_mail:
+							html_content = html.render({'custom_msg': items[0].article.custom_mail})
 					if not html_content:
 						html_content = html.render({})
 
