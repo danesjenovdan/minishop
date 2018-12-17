@@ -19,6 +19,7 @@ from shop.serializers import ArticleSerializer, CategorySerializer, ItemSerializ
 from shop.utils import get_basket, get_basket_data, add_article_to_basket, update_stock, update_basket
 from shop.payments import paypal_checkout, paypal_execute, upn, paypal_cancel, paypal_subscriptions_checkout, execute_subscription, cancel_subscription
 from shop.views import getPDFodOrder
+from shop.spam_mailer import send_mail_spam
 
 from slackclient import SlackClient
 
@@ -206,12 +207,25 @@ def checkout(request):
 
             pdf = getPDFodOrder(None, signing.dumps(order.id)).render().content
 
-            subject, from_email, to = 'Položnica za tvoj nakup <3', settings.FROM_MAIL, order.email
+            subject, to = 'Položnica za tvoj nakup <3', order.email
             text_content = strip_tags(html_content)
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.attach('racun.pdf', pdf, 'application/pdf')
-            msg.send()
+
+            send_mail_spam(
+                subject=subject,
+                text_content=text_content,
+                html_content=html_content,
+                to_mail=to,
+                file=(
+                    'racun.pdf',
+                    pdf,
+                    'application/pdf'
+                )
+            )
+
+            #msg = EmailMultiAlternatives(subject, text_content, [to])
+            #msg.attach_alternative(html_content, "text/html")
+            #msg.attach('racun.pdf', pdf, 'application/pdf')
+            #msg.send()
 
             return JsonResponse(data)
         else:
@@ -262,13 +276,19 @@ def get_items_for_basket(request):
 def send_as_email(request):
     data = json.loads(request.body.decode('utf8'))
 
-    send_mail(
-        data.get('title', 'untitled'),
-        ((data.get('email', '') + ' nam sproca: \n' ) if data.get('email', '') else '') + data.get('body', 'empty'),
-        settings.FROM_MAIL,
-        [settings.SUPPORT_MAIL],
-        fail_silently=False,
+    send_mail_spam(
+        subject=data.get('title', 'untitled'),
+        text_content=((data.get('email', '') + ' nam sproca: \n' ) if data.get('email', '') else '') + data.get('body', 'empty'),
+        to_mail=settings.SUPPORT_MAIL,
     )
+
+    # send_mail(
+    #     data.get('title', 'untitled'),
+    #     ((data.get('email', '') + ' nam sproca: \n' ) if data.get('email', '') else '') + data.get('body', 'empty'),
+    #     settings.FROM_MAIL,
+    #     [settings.SUPPORT_MAIL],
+    #     fail_silently=False,
+    # )
     return JsonResponse({"status": "sent"})
 
 
@@ -280,17 +300,24 @@ def bussines(request):
         email = request.POST["email"]
         message = request.POST["message"]
         try:
-            send_mail(
-                '[parlameter] Poslovna donacija',
-                '<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: </p><p>'+ message + '</p>',
-                'donacije@parlameter.si',
-                ['info@parlametar.hr', 'info@parlameter.si', 'vsi@danesjenovdan.si'],
-                html_message='<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: </p><p>'+ message + '</p>',
-                fail_silently=False,
+            send_mail_spam(
+                subject='[parlameter] Poslovna donacija',
+                text_content=strip_tags('<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: </p><p>'+ message + '</p>'),
+                html_content='<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: </p><p>'+ message + '</p>',
+                to_mail='vsi@danesjenovdan.si',
             )
+
+            # send_mail(
+            #     '[parlameter] Poslovna donacija',
+            #     '<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: </p><p>'+ message + '</p>',
+            #     'donacije@parlameter.si',
+            #     ['info@parlametar.hr', 'info@parlameter.si', 'vsi@danesjenovdan.si'],
+            #     html_message='<p>Oseba z e-naslovom ' + email + ' nam želi donirati dinar. <br>Poslala nam je naslednje sporočilo: </p><p>'+ message + '</p>',
+            #     fail_silently=False,
+            # )
             context["status"] = "sent"
         except:
-            client.captureException()
+            sc.captureException()
             context["status"] = "fail"
     else:
         context["status"] = "ni POST"

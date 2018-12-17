@@ -7,6 +7,8 @@ from django.utils.html import strip_tags
 
 from datetime import datetime, timedelta
 
+from shop.spam_mailer import send_mail_spam
+
 class Cebelca(object): 
     def __init__(self, api_type='test'):
         self.api_key = settings.CEBELCA_KEY
@@ -122,13 +124,26 @@ class Cebelca(object):
         print("send mail")
         pdf = self.get_pdf()
         if pdf[0]:
-            subject, from_email, to = title, settings.FROM_MAIL, email
+            subject, to = title, email
             text_content = strip_tags(body)
             html_content = body
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.attach('racun.pdf', pdf[1], 'application/pdf')
-            msg.send()
+
+            send_mail_spam(
+                subject=subject,
+                text_content=text_content,
+                html_content=html_content,
+                to_mail=to,
+                file=(
+                    'racun.pdf',
+                    pdf[1],
+                    'application/pdf'
+                )
+            )
+
+            #msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            #msg.attach_alternative(html_content, "text/html")
+            #msg.attach('racun.pdf', pdf[1], 'application/pdf')
+            #msg.send()
 
             return True, 'Sent'
         else:

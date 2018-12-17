@@ -43,3 +43,5 @@ SLACK_KEY = ""
 
 SUPPORT_MAIL = ""
 
+MAILER_URL = 'http://localhost:8080/send_shop_mail/'
+MAILER_AUTH = ('user', 'pass1234')

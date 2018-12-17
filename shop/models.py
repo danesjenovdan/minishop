@@ -1,6 +1,10 @@
 from django.db import models
+from django.template.loader import get_template
+
 from behaviors.behaviors import Timestamped
 from .cebelca import Cebelca
+
+from tinymce.models import HTMLField
 
 # Create your models here.
 
@@ -21,6 +25,7 @@ class Article(Timestamped):
 	image = models.ImageField(upload_to='images/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
 	mergable = models.BooleanField(default=False)
 	articles = models.ManyToManyField('self', blank=True, through='BoundleItem', symmetrical=False)
+	custom_mail = HTMLField(null=True, blank=True)
 
 	def __str__(self):
 		return self.name
@@ -104,13 +109,25 @@ class Order(Timestamped):
 					c = Cebelca(api_type="prod")
 					c.add_partner(self.name, address[0], post, city)
 					c.add_header()
-					for item in self.basket.items.all():
+					items = self.basket.items.all()
+
+					# prepare mail content
+					html = get_template('thanksgiving.html')
+					html_content = None
+					if len(items) == 1:
+						if items[0].custom_mail:
+							html_content = html.render({'custom_msg': items[0].custom_mail})
+					if not html_content:
+						html_content = html.render({})
+
+					for item in items:
 						c.add_item(item.article.name, item.quantity, item.price, vat=0)
 					c.set_invoice_paid(pay_method, self.basket.total)
 					c.finalize_invoice()
-					c.send_mail(self.email, 'Hvala <3', 'Zdravo,<br><br>hvala lepa za tvoj nakup in čestitke za dober izbor.<br><br>Če med čakanjem nanjo bereš <a href="https://agrument.danesjenovdan.si/">agrumente</a>, roba garantirano prej pride. ;)<br><br>Iskreno upajoč, da ti bo kupljeno v veselje, te lepo pozdravlja<br><br>Ekipa Danes je nov dan<br>')
+					c.send_mail(self.email, 'Hvala <3', html_content)
 					self.is_on_cebelca = True
 					self.save()
 		super(Order, self).save(*args, **kwargs)
+
 
 
