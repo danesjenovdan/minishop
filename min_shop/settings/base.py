@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'behaviors.apps.BehaviorsConfig',
     'wkhtmltopdf',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
