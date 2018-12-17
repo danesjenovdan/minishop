@@ -124,15 +124,14 @@ class Cebelca(object):
         print("send mail")
         pdf = self.get_pdf()
         if pdf[0]:
-            subject, to = title, email
             text_content = strip_tags(body)
             html_content = body
 
             send_mail_spam(
-                subject=subject,
+                subject=title,
                 text_content=text_content,
                 html_content=html_content,
-                to_mail=to,
+                to_mail=email,
                 file=(
                     'racun.pdf',
                     pdf[1],
