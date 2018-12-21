@@ -56,10 +56,12 @@ def paypal_execute(request, sc):
             order.payer_id=payer_id
             order.save()
             url = "https://shop.djnd.si/admin/shop/order/" + str(order.id) + "/change/"
-            msg = order.name + " je nekaj naročil in plačal je s paypalom: \n"
+            msg = order.name + " je nekaj naročil/-a in plačal/-a je s paypalom: \n"
             for item in order.basket.items.all():
                 msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
             msg += "Preveri naročilo: " + url
+            if order.info:
+                msg += '\n Posvetilo: ' + order.info
             sc.api_call(
               "chat.postMessage",
               channel="#danesjenovdan_si",

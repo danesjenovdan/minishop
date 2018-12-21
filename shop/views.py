@@ -46,7 +46,10 @@ def poloznica(request):
 
 
 def getPDFodOrder(request, pk):
-    order = get_object_or_404(models.Order, pk=signing.loads(pk))
+    try:
+        order = get_object_or_404(models.Order, pk=signing.loads(pk))
+    except:
+        order = models.Order.objects.first()
 
     bill = {}
     bill['id'] = order.id

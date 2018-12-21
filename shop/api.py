@@ -160,10 +160,12 @@ def checkout(request):
         elif payment_type == 'upn':
             reference = upn(order)
             url = "https://shop.djnd.si/admin/shop/order/" + str(order.id) + "/change/"
-            msg = order.name + " je nekaj naročil in palčal bo s položnico: \n"
+            msg = order.name + " je nekaj naročil/-a in plačal/-a bo s položnico: \n"
             for item in basket.items.all():
                 msg += " * " + str(item.quantity) + "X " + item.article.name + "\n"
             msg += "Preveri naročilo: " + url
+            if order.info:
+                msg += '\n Posvetilo: ' + order.info
             sc.api_call(
               "chat.postMessage",
               channel="#danesjenovdan_si",

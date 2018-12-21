@@ -119,7 +119,8 @@ class Order(Timestamped):
 							html_content = html.render({'custom_msg': items[0].article.custom_mail})
 					if not html_content:
 						html_content = html.render({})
-
+					
+					# add items to cebelca invoice
 					for item in items:
 						c.add_item(item.article.name, item.quantity, item.price, vat=0)
 					c.set_invoice_paid(pay_method, self.basket.total)
