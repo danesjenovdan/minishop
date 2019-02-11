@@ -122,7 +122,8 @@ class Order(Timestamped):
 					
 					# add items to cebelca invoice
 					for item in items:
-						c.add_item(item.article.name, item.quantity, item.price, vat=0)
+						price = item.price * 100 / (100 + item.article.tax)
+						c.add_item(item.article.name, item.quantity, price, vat=item.article.tax)
 					c.set_invoice_paid(pay_method, self.basket.total)
 					c.finalize_invoice()
 					c.send_mail(self.email, 'Hvala <3', html_content)
